@@ -6,17 +6,23 @@ const log = require("fancy-log");
 const https = require('https');
 const cssJson = require('cssjson');
 
-const CSS_FOLDER = './css';
-const FONTS_FOLDER = './fonts';
-
-
 // Pass CLI arguments
-let FONT_KIT_URL = argv.url;
+const FONT_KIT_URL = argv.url;
 
 if(!FONT_KIT_URL){
     console.log(chalk.red("No font URL specified"));
     process.exit(0)
 }
+
+const DIST_DIR = argv.dist;
+
+if (!DIST_DIR) {
+    console.log(chalk.red("No dist specified"));
+    process.exit(0)
+}
+
+const CSS_FOLDER = `./${DIST_DIR}/css`;
+const FONTS_FOLDER = `./${DIST_DIR}/fonts`;
 
 // Reject non-https requests
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '1';
@@ -130,7 +136,7 @@ async function download_fontfiles() {
                         const fontWeight = fontFaceRule.match(/font-weight:\s*([^;]+);/)[1];
                         const fontStyle = fontFaceRule.match(/font-style:\s*([^;]+);/)[1];
                         const fontUrlAndFormats = fontFaceRule.match(/url\("([^"]+)"\)\s+format\("([^"]+)"\)/g);
-                        
+
 
                         for (const fontUrlAndFormat of fontUrlAndFormats) {
                             const fontUrl = fontUrlAndFormat.match(/url\("([^"]+)"\)/)[1];
